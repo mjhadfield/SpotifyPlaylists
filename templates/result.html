@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ playlist_name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Playlist created</h1>
+    <p class="subtitle">{{ playlist_name }}</p>
+    <a class="button" href="{{ playlist_url }}" target="_blank" rel="noopener">Open in Spotify</a>
+
+    <h2>Added ({{ matched|length }})</h2>
+    <ol class="tracklist">
+      {% for track in matched %}
+        <li>{{ track.artist }} &mdash; {{ track.title }}</li>
+      {% endfor %}
+    </ol>
+
+    {% if unmatched %}
+      <h2>Couldn't find on Spotify ({{ unmatched|length }})</h2>
+      <ul class="tracklist unmatched">
+        {% for song in unmatched %}
+          <li>{{ song.artist }} &mdash; {{ song.title }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <a class="link-back" href="{{ url_for('index') }}">&larr; Create another</a>
+  </main>
+</body>
+</html>

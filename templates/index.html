@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Setlist &rarr; Spotify Playlist</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Setlist &rarr; Spotify Playlist</h1>
+    <p class="subtitle">Paste a setlist.fm link, get a Spotify playlist in setlist order.</p>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if authenticated %}
+      <form action="{{ url_for('create') }}" method="post" class="form">
+        <input
+          type="url"
+          name="setlist_url"
+          placeholder="https://www.setlist.fm/setlist/..."
+          required
+        >
+        <button type="submit">Create Playlist</button>
+      </form>
+    {% else %}
+      <a class="button" href="{{ auth_url }}">Log in with Spotify</a>
+    {% endif %}
+  </main>
+</body>
+</html>
