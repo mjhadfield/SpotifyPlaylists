@@ -8,7 +8,7 @@ import os
 from typing import List, Optional, Tuple
 
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth
+from spotipy.oauth2 import SpotifyOauthError, SpotifyOAuth
 
 from sources import SongQuery
 
@@ -28,7 +28,17 @@ def get_auth_manager() -> SpotifyOAuth:
 
 
 def is_authenticated(auth_manager: SpotifyOAuth) -> bool:
-    return auth_manager.get_cached_token() is not None
+    try:
+        return auth_manager.get_cached_token() is not None
+    except SpotifyOauthError:
+        # Refresh token revoked/expired (e.g. access removed in the Spotify
+        # account, or the app's secret rotated). The cache is dead weight now -
+        # drop it so the user gets the login link again instead of a crash.
+        try:
+            os.remove(CACHE_PATH)
+        except FileNotFoundError:
+            pass
+        return False
 
 
 def get_client(auth_manager: SpotifyOAuth) -> spotipy.Spotify:
